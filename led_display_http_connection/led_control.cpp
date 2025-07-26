@@ -1,7 +1,7 @@
 
 #include "mbed.h"
 
-// lock_state (modified via mqtt) 
+// 
 extern volatile bool lock_state;
 
 // LED pins (theyre both green)
@@ -25,5 +25,7 @@ void run_led_control_loop()
         ThisThread::sleep_for(500ms);
     }
 }
+
+
 
 
