@@ -4,15 +4,16 @@
 #include "rtos/ThisThread.h"
 #include <cstdio>
 #include <cstring>
+#include "encrypt.hpp"
 
 extern volatile bool lock_state;
 extern volatile bool state_updated;
 
-#define SERVER_IP "192.168.2.30" 
+#define SERVER_IP "10.66.169.168" 
 #define SERVER_PORT 5000
 #define RECEIVER_PORT 8080  // Port for receiver to listen on
-#define WIFISSD "BELL738"
-#define WIFIPWD "4165097451"
+#define WIFISSD "Pixel_2073"
+#define WIFIPWD "pass1122"
 
 // Function to parse the server response and update lock state
 void parse_state_response(const char* response) {
@@ -40,14 +41,39 @@ void parse_state_response(const char* response) {
             if (*value_start == '"') {
                 value_start++;
             }
-            
+
+            char encrypted_state[512]; 
+            int idx = 0;
+
+            while (*value_start != '"' && *value_start != '\0' && idx < sizeof(encrypted_state) - 1) {
+                encrypted_state[idx++] = *value_start;
+                value_start++;
+            }
+            encrypted_state[idx] = '\0'; 
+
+            unsigned char decrypted_state[256];
+            size_t decrypted_len;
+
+            int status = decrypt_data(key, (const unsigned char*)encrypted_state, strlen(encrypted_state),decrypted_state, &decrypted_len);
+
+            if (status != 0) {
+                printf("decrpytion failed, status %d\n", status);
+                return;
+            }
+
+            // Ensure null termination for safety
+            if (decrypted_len >= sizeof(decrypted_state)) {
+                decrypted_len = sizeof(decrypted_state) - 1;
+            }
+            decrypted_state[decrypted_len] = '\0';
+
             bool new_lock_state;
-            if (strncmp(value_start, "LOCK", 4) == 0) {
+            if (strncmp((char*)decrypted_state, "LOCK", 4) == 0) {
                 new_lock_state = true;
-            } else if (strncmp(value_start, "UNLOCK", 6) == 0) {
+            } else if (strncmp((char*)decrypted_state, "UNLOCK", 6) == 0) {
                 new_lock_state = false;
             } else {
-                printf("Invalid lock_state value in response: '%.10s'\n", value_start);
+                printf("Invalid lock_state value in response: '%.10s'\n", decrypted_state);
                 fflush(stdout);
                 return;
             }
