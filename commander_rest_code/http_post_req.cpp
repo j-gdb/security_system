@@ -1,14 +1,16 @@
 #include "mbed.h"
 #include "WiFiInterface.h"
 #include <cstdio>
+#include <cstring>
+#include "encrypt.hpp"
 
 extern volatile bool lock_state;
 extern volatile bool state_changed;
 
-#define SERVER_IP "192.168.2.30" 
+#define SERVER_IP "10.66.169.168" 
 #define SERVER_PORT 5000
-#define WIFISSD "BELL738"
-#define WIFIPWD "4165097451"
+#define WIFISSD "Pixel_2073"
+#define WIFIPWD "pass1122"
 
 
 void setup_wifi_and_wait() {
@@ -77,9 +79,15 @@ void setup_wifi_and_wait() {
             state_changed = false;
 
             const char* state_str = lock_state ? "LOCK" : "UNLOCK";
+            unsigned char b64_output[512];
+            size_t b64_len;
+
+            encrypt_data(key, (const unsigned char*)state_str, strlen(state_str), b64_output, sizeof(b64_output), &b64_len);
+
+            
             char json_body[128];
             snprintf(json_body, sizeof(json_body),
-                     "{\"device\": \"stm32l475\", \"lock\": \"%s\"}", state_str);
+                     "{\"device\": \"stm32l475\", \"lock\": \"%s\"}", b64_output);
 
             char http_request[512];
             snprintf(http_request, sizeof(http_request),
