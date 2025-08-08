@@ -1,11 +1,12 @@
 #include "mbed.h"
+#include "toggle.hpp"
 
-InterruptIn blue_button(PC_0); 
-InterruptIn red_button(PC_1);
-InterruptIn green_button(PC_2);
-InterruptIn black_button(PC_3);
+InterruptIn blue_button(PA_4); 
+InterruptIn red_button(PA_8);
+InterruptIn green_button(PA_9);
+InterruptIn black_button(PA_10);
 
-
+extern volatile bool lock_state;
 
 int passcode_digit = 4;
 int passcode[4] = {2, 3, 0, 1};
@@ -24,7 +25,10 @@ int isEqual(int x[], int y[], int size){
 void check_passcode(){
     if (arr_index == passcode_digit){
         if (isEqual(passcode, input_arr, passcode_digit)){
-            printf("Correct Passcode\n");
+            if (lock_state){
+                toggle_lock();
+            }
+            printf("Correct Passcode: system unlocked\n");
         } else {
             printf("Incorrect Passcode\n");
         }

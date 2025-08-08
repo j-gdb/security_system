@@ -1,11 +1,14 @@
 #include "mbed.h"
 #include "VL53L0X.h"
+#include "toggle.hpp"
 
 DevI2C i2c(PB_11, PB_10);//SDA, SCL
 DigitalOut xshut(PC_6);//Reset pin
 
 VL53L0X sensor(&i2c, &xshut, PC_7);
 VL53L0X_DEV dev;
+
+extern volatile bool lock_state;
 
 EventQueue *global_queue = nullptr;
 
@@ -20,6 +23,9 @@ void process_distance() {
     if (distance_measured > last_distance+10 || distance_measured < last_distance-10) {
         printf("Distance: %d mm\n", distance_measured);
         last_distance = distance_measured;
+        if (lock_state){
+            toggle_lock();
+        }
     }
 }
 

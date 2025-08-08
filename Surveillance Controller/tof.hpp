@@ -1,5 +1,5 @@
-#ifndef VL53L0X_SENSOR_HPP
-#define VL53L0X_SENSOR_HPP
+#ifndef TOF_HPP
+#define TOF_HPP
 
 #include "mbed.h"
 #include "VL53L0X.h"

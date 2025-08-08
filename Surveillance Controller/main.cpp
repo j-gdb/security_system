@@ -1,8 +1,16 @@
 #include "mbed.h"
 #include "buttons.hpp"
 #include "tof.hpp"
+#include "toggle.hpp"
 
-int main() {
+void run_led_control_loop();
+void setup_wifi_and_wait();
+
+InterruptIn button(BUTTON1); 
+
+
+int main()
+{
     EventQueue queue;
     Thread event_thread;
     
@@ -11,10 +19,11 @@ int main() {
     init_sensor(queue);
     init_buttons(queue);
 
-    while (true) {
-        ThisThread::sleep_for(1s);
-        printf("Running\n");
-        fflush(stdout);
-    }
 
+    button.fall(&toggle_lock);
+    
+    Thread http_post_thread;
+    http_post_thread.start(setup_wifi_and_wait);
+    
+    run_led_control_loop();
 }
