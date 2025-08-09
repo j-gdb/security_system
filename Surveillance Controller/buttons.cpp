@@ -1,5 +1,4 @@
-#include "mbed.h"
-#include "toggle.hpp"
+#include "buttons.hpp"
 
 InterruptIn blue_button(PA_4); 
 InterruptIn red_button(PA_8);
@@ -9,12 +8,13 @@ InterruptIn black_button(PA_10);
 extern volatile bool lock_state;
 
 int passcode_digit = 4;
-int passcode[4] = {2, 3, 0, 1};
+int passcode[4] = {2, 3, 0, 1};// 0 = blue, 1 = red, 2 = green, 3 = black
+
 int arr_index = 0;
 int input_arr[4];
-// 0 = blue, 1 = red, 2 = green, 3 = black
 
-int isEqual(int x[], int y[], int size){
+// checks if two arrays are the same
+bool isEqual(int x[], int y[], int size){
     for (int i = 0; i < size; ++i) {
         if (x[i] != y[i])
             return false;
@@ -22,6 +22,7 @@ int isEqual(int x[], int y[], int size){
     return true;
 }
 
+// checks if the users combination is the same as the password
 void check_passcode(){
     if (arr_index == passcode_digit){
         if (isEqual(passcode, input_arr, passcode_digit)){
@@ -36,6 +37,7 @@ void check_passcode(){
     }
 }
 
+// interrupt handler for the button press
 void handle_button(int value) {
     printf("Button %d pressed!\n", value);
     input_arr[arr_index] = value;
@@ -44,6 +46,7 @@ void handle_button(int value) {
     ThisThread::sleep_for(300ms);
 }
 
+// initializes the connection between the external buttons and the interrupts
 void init_buttons(EventQueue &queue){
     
     blue_button.mode(PullUp);

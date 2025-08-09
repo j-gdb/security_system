@@ -1,6 +1,4 @@
-#include "mbed.h"
-#include "VL53L0X.h"
-#include "toggle.hpp"
+#include "tof.hpp"
 
 DevI2C i2c(PB_11, PB_10);//SDA, SCL
 DigitalOut xshut(PC_6);//Reset pin
@@ -12,8 +10,9 @@ extern volatile bool lock_state;
 
 EventQueue *global_queue = nullptr;
 
-uint16_t last_distance = 0;
+volatile uint16_t last_distance = 0;
 
+// checks if the distance on the sensor changed and toggles the state based on whether the distance changed
 void process_distance() {
     VL53L0X_RangingMeasurementData_t data;
     sensor.handle_irq(range_continuous_interrupt, &data);
@@ -29,12 +28,14 @@ void process_distance() {
     }
 }
 
+// Interrupt Request Handler to avoid errors in the process distance function
 void irq_handler() {
     if (global_queue) {
-        global_queue->call(process_distance);//queue calls the function process_distance
+        global_queue->call(process_distance);
     }
 }
 
+// initialize the VL53L0X sensor and the interrupts connected to the sensor
 int init_sensor(EventQueue &queue){
     
     global_queue = &queue;
@@ -55,12 +56,16 @@ int init_sensor(EventQueue &queue){
         printf("VL53L0X prepare failed!\n");
         return 1;
     }
+    
+    // setup the ToF sensor
+    sensor.vl53l0x_get_device(&dev);
+    sensor.VL53L0X_set_gpio_config(dev, 0, VL53L0X_DEVICEMODE_CONTINUOUS_RANGING, VL53L0X_GPIOFUNCTIONALITY_NEW_MEASURE_READY, VL53L0X_INTERRUPTPOLARITY_LOW);
 
-    sensor.vl53l0x_get_device(&dev);//get the device that were using (STM32 B-L475E)
+    // attach and enable the sensor to our interrupts
+    sensor.attach_interrupt_measure_detection_irq(irq_handler);
+    sensor.enable_interrupt_measure_detection_irq();
 
-    sensor.VL53L0X_set_gpio_config(dev, 0, VL53L0X_DEVICEMODE_CONTINUOUS_RANGING, VL53L0X_GPIOFUNCTIONALITY_NEW_MEASURE_READY, VL53L0X_INTERRUPTPOLARITY_LOW);//set the config for our device
-    sensor.attach_interrupt_measure_detection_irq(irq_handler);//attach our irq for our sensor
-    sensor.enable_interrupt_measure_detection_irq();//enable the attached irq
-    sensor.start_measurement(range_continuous_interrupt, irq_handler);//start measuring
+    // start the sensor
+    sensor.start_measurement(range_continuous_interrupt, irq_handler);
     return 0;
 }

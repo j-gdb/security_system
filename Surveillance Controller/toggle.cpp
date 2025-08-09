@@ -1,3 +1,5 @@
+#include "toggle.hpp"
+
 volatile bool lock_state = true;
 volatile bool state_changed = false;
 
