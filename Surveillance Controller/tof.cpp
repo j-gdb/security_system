@@ -8,9 +8,11 @@ VL53L0X_DEV dev;
 
 extern volatile bool lock_state;
 
+bool initial_measurement = true;
+
 EventQueue *global_queue = nullptr;
 
-volatile uint16_t last_distance = 0;
+volatile uint16_t last_distance = 8190;
 
 // checks if the distance on the sensor changed and toggles the state based on whether the distance changed
 void process_distance() {
@@ -22,7 +24,7 @@ void process_distance() {
     if (distance_measured > last_distance+10 || distance_measured < last_distance-10) {
         printf("Distance: %d mm\n", distance_measured);
         last_distance = distance_measured;
-        if (lock_state){
+        if (!lock_state){
             toggle_lock();
         }
     }

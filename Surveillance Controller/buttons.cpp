@@ -1,14 +1,15 @@
 #include "buttons.hpp"
 
 InterruptIn blue_button(PA_4); 
-InterruptIn red_button(PA_8);
-InterruptIn green_button(PA_9);
-InterruptIn black_button(PA_10);
+InterruptIn red_button(PA_3);
+InterruptIn green_button(PD_14);
+InterruptIn black_button(PB_2);
 
 extern volatile bool lock_state;
 
 int passcode_digit = 4;
-int passcode[4] = {2, 3, 0, 1};// 0 = blue, 1 = red, 2 = green, 3 = black
+int passcode[4] = {2, 3, 0, 1};// 0 = black, 1 = green, 2 = red, 3 = blue
+int button_pressed[4] = {0, 0, 0, 0};
 
 int arr_index = 0;
 int input_arr[4];
@@ -34,16 +35,22 @@ void check_passcode(){
             printf("Incorrect Passcode\n");
         }
         arr_index = 0;
+        for (int i = 0; i < 4; ++i) {
+            button_pressed[i] = 0;
+        }
     }
 }
 
 // interrupt handler for the button press
 void handle_button(int value) {
-    printf("Button %d pressed!\n", value);
-    input_arr[arr_index] = value;
-    arr_index++;
-    check_passcode();
-    ThisThread::sleep_for(300ms);
+    if (button_pressed[value] == 0){
+        printf("Button %d pressed!\n", value);
+        button_pressed[value] = 1;
+        input_arr[arr_index] = value;
+        arr_index++;
+        check_passcode();
+        ThisThread::sleep_for(300ms);
+    }
 }
 
 // initializes the connection between the external buttons and the interrupts
