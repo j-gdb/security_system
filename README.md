@@ -1,11 +1,9 @@
 # CSC385 Security System
 
 ## Surveillance Controller (ToF Sensor & Buttons)
-
-## Description
 This microcontroller is tasked to detecting any changes on the Time of Flight Sensor (VL53L0X) and also unlocking the Security System by typing the password on the connected external buttons.
 
-## Libraries
+### Libraries
 - We used a modified version of the STM32 VL53L0X library which is included in the Surviellance Folder. However if the there are problems with the IDE not recognizing the library folder you can manually import the library via the link here: http://os.mbed.com/teams/ST/code/VL53L0X/ and replacing all wait_ms in any file with thread_sleep_for. 
 - We also used a custom driver for the on-board ISM43362 WiFi module. This driver overrwites some functions in the MbedOS library allowing 
 our specific boards to connect to the internet. The driver is lightweight and included within this codebase and its repository link is 
@@ -34,8 +32,24 @@ the following: https://github.com/ARMmbed/wifi-ism43362
 8. presssing a sequence of buttons in the correct order should unlock the system. (Red - Blue - Black - Green)
 
 ## Surveillance Controller (Microphone)
-The microphone sensor component integrates with the main Surveillance Controller to provide an audio-based method of unlocking the security system. When a specific sound level is detected, it sends a signal to the 
-main controller to unlock the system.
+The microphone sensor component integrates with the main Surveillance Controller to provide an audio-based method of unlocking the security system. When a specific sound level is detected, it sends a signal to the main Surveillance Controller to unlock the system. Unlike the other boards, the code for the microphone was written in the STM32Cube framework, rather than the Mebd framework. The specific hardware set up is included in the mic_2.ioc file.
+
+### Prerequisites
+- Use the STM32Cube IDE as the reccomended IDE
+- Connect the wires the Microphone Controller to the main Surveillance Controller.
+    - Create a ground connection between the Microphone Controller and the Surveillance Controller.
+    - Connect PB_8 on the Microphone Controller to PA_15 on the main Surveillance Controller.
+
+### Steps
+1. Open the Microphone Controller folder and navigate to the .project.
+2. Double click on the .project file. This should open up the project in the STM32Cube IDE.
+3. Connect the microcontroller with the usb cord onto your PC.
+4. Build and run the program.
+5. Any loud noises should be picked up by the microphone, and send a digial signal will be sent out.
 
 ## Command Controller 
 This microcontroller manages the physical actuator (servo motor) of the security system based on commands received from the server. It polls a central server for the current lock state and controls the servo motor accordingly.
+
+### Prerequisites
+- Use the Mbed IDE as the reccomended IDE.
+- Connect the wires between 
