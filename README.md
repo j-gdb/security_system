@@ -7,7 +7,9 @@ This microcontroller is tasked to detecting any changes on the Time of Flight Se
 
 ## Libraries
 - We used a modified version of the STM32 VL53L0X library which is included in the Surviellance Folder. However if the there are problems with the IDE not recognizing the library folder you can manually import the library via the link here: http://os.mbed.com/teams/ST/code/VL53L0X/ and replacing all wait_ms in any file with thread_sleep_for. 
-- 
+- We also used a custom driver for the on-board ISM43362 WiFi module. This driver overrwites some functions in the MbedOS library allowing 
+our specific boards to connect to the internet. The driver is lightweight and included within this codebase and its repository link is 
+the following: https://github.com/ARMmbed/wifi-ism43362 
 
 ### Prerequisites
 - Use the Mbed Studio as the reccomended IDE
@@ -32,6 +34,8 @@ This microcontroller is tasked to detecting any changes on the Time of Flight Se
 8. presssing a sequence of buttons in the correct order should unlock the system. (Red - Blue - Black - Green)
 
 ## Surveillance Controller (Microphone)
-
+The microphone sensor component integrates with the main Surveillance Controller to provide an audio-based method of unlocking the security system. When a specific sound level is detected, it sends a signal to the 
+main controller to unlock the system.
 
 ## Command Controller 
+This microcontroller manages the physical actuator (servo motor) of the security system based on commands received from the server. It polls a central server for the current lock state and controls the servo motor accordingly.

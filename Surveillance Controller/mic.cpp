@@ -3,10 +3,8 @@
 InterruptIn mic(PA_15);
 
 void signal(){
-    printf("Signal Detected");
-    if (lock_state){
-        toggle_lock();
-    }
+    // printf("Signal Detected");
+    unlock();
 }
 
 void init_mic_response(){

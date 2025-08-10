@@ -15,6 +15,7 @@ int main()
     Thread event_thread;
     Thread http_post_thread;
     
+    http_post_thread.start(setup_wifi_and_wait);
     event_thread.start(callback(&queue, &EventQueue::dispatch_forever));
     
     // initialize the sensor and external buttons
@@ -22,9 +23,7 @@ int main()
     init_buttons(queue);
     init_mic_response();
     
-    button.fall(&toggle_lock);
-    
-    http_post_thread.start(setup_wifi_and_wait);
+    button.fall(&unlock);
     
     run_led_control_loop();
 }

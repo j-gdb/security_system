@@ -19,18 +19,18 @@ void setup_wifi_and_wait() {
     if (!wifi) return;
 
     wifi->set_credentials(WIFISSD, WIFIPWD, NSAPI_SECURITY_WPA2);
-    printf("Connecting to WiFi...\n");
-    fflush(stdout);
+    // printf("Connecting to WiFi...\n");
+    // fflush(stdout);
 
     if (wifi->connect() != 0) return;
-    printf("Connected to WiFi\n");
-    fflush(stdout);
+    // printf("Connected to WiFi\n");
+    // fflush(stdout);
 
     char register_body[256];
     SocketAddress my_addr;
     nsapi_error_t result = wifi->get_ip_address(&my_addr);
     if (result != NSAPI_ERROR_OK) {
-        printf("Failed to get IP address\n");
+        // printf("Failed to get IP address\n");
         return;
     }
     const char* ip = my_addr.get_ip_address();
@@ -63,14 +63,14 @@ void setup_wifi_and_wait() {
             len = register_socket.recv(buffer, sizeof(buffer) - 1);
             if (len > 0) {
                 buffer[len] = '\0';
-                printf("%s", buffer);
+                // printf("%s", buffer);
             }
         } while (len > 0);
 
         register_socket.close();
     } else {
-        printf("Failed to register with server\n");
-        fflush(stdout);
+        // printf("Failed to register with server\n");
+        // fflush(stdout);
         return;  // Skip further actions if registration failed
     }
 
@@ -114,14 +114,14 @@ void setup_wifi_and_wait() {
                     len = socket.recv(buffer, sizeof(buffer) - 1);
                     if (len > 0) {
                         buffer[len] = '\0';
-                        printf("%s", buffer);
+                        // printf("%s", buffer);
                     }
                 } while (len > 0);
 
                 socket.close();
             } else {
-                printf("Socket connection failed\n");
-                fflush(stdout);
+                // printf("Socket connection failed\n");
+                // fflush(stdout);
             }
         }
 

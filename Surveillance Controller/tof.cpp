@@ -12,22 +12,50 @@ bool initial_measurement = true;
 
 EventQueue *global_queue = nullptr;
 
-volatile uint16_t last_distance = 8190;
+// track previous readings for consistency checking
+volatile uint16_t prev_distance_measured = 0;
+const uint16_t MAX_ALLOWED_CHANGE = 20; // max change allowed between readings
 
-// checks if the distance on the sensor changed and toggles the state based on whether the distance changed
+// checks if distance on the sensor changed and toggles the state based on if distance changed
 void process_distance() {
     VL53L0X_RangingMeasurementData_t data;
     sensor.handle_irq(range_continuous_interrupt, &data);
 
     uint16_t distance_measured = data.RangeMilliMeter;
-
-    if (distance_measured > last_distance+10 || distance_measured < last_distance-10) {
-        printf("Distance: %d mm\n", distance_measured);
-        last_distance = distance_measured;
-        if (!lock_state){
-            toggle_lock();
-        }
+    
+    // debugging
+    // printf("Distance: %d mm\n", distance_measured);
+    
+    // range for ToF
+    const uint16_t MIN_VALID_DISTANCE = 50;   
+    const uint16_t MAX_VALID_DISTANCE = 350;
+    
+    // do nothing for first reading, store it and return
+    if (initial_measurement) {
+        prev_distance_measured = distance_measured;
+        initial_measurement = false;
+        return;
     }
+    
+    // abs diff between current / previous
+    uint16_t distance_change = abs((int)distance_measured - (int)prev_distance_measured);
+    
+    // check:
+    // -reading is within the valid range for detection
+    // -change from the previous reading is small
+    // -system is currently unlocked
+    if (distance_measured >= MIN_VALID_DISTANCE && 
+        distance_measured <= MAX_VALID_DISTANCE && 
+        distance_change <= MAX_ALLOWED_CHANGE &&
+        !lock_state) {
+        
+        printf("Valid detection at %d mm (change: %d mm) - locking\n", 
+              distance_measured, distance_change);
+        toggle_lock();
+    }
+
+    // update previous distance for next reading
+    prev_distance_measured = distance_measured;
 }
 
 // Interrupt Request Handler to avoid errors in the process distance function
