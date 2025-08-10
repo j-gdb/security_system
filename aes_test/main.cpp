@@ -10,7 +10,7 @@
 // === Example usage ===
 int main(void) {
 
-    unsigned char plaintext[] = "Hello from encrypt!";
+    unsigned char plaintext[] = "UNLOCK";
     unsigned char b64_output[512];
     size_t b64_len;
 
