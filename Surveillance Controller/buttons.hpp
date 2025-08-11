@@ -17,5 +17,7 @@ void button_trigger(DigitalIn button, int* arr_index, int* input_arr);
 void init_buttons(EventQueue &queue);
 void handle_button(int value);
 void reset_password();
+void cancel_all_events(EventQueue &queue);
 
 #endif
+
