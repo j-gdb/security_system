@@ -4,8 +4,10 @@ InterruptIn mic(PA_15);
 extern volatile bool lock_state;
 
 void signal(){
-    // printf("Signal Detected");
-    unlock();
+    if(!lock_state){
+        toggle_lock();
+        }
+    
 }
 
 void init_mic_response(){
