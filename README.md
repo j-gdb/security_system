@@ -32,7 +32,7 @@ the following: https://github.com/ARMmbed/wifi-ism43362
 8. Presssing a sequence of buttons in the correct order should unlock the system. (Red - Blue - Black - Green)
 
 ## Surveillance Controller (Microphone)
-The microphone sensor component integrates with the main Surveillance Controller to provide an audio-based method of unlocking the security system. When a specific sound level is detected, it sends a signal to the main Surveillance Controller to unlock the system. Unlike the other boards, the code for the microphone was written in the STM32Cube framework, rather than the Mebd framework. The specific hardware set up is included in the "Microphone Controller.ioc" file.
+The microphone sensor component integrates with the main Surveillance Controller to provide an audio-based method of unlocking the security system. When a specific sound level is detected, it sends a signal to the main Surveillance Controller to unlock the system. Unlike the other boards, the code for the microphone was written in the STM32Cube framework, rather than the Mebd framework. The specific hardware set up is included in the "Microphone Controller.ioc" file. For more information about the hardware setup of the microphone, this is the tutorial that was followed: https://www.youtube.com/watch?v=MdDqVeIGhec
 
 ### Prerequisites
 - Use the STM32Cube IDE as the reccomended IDE
