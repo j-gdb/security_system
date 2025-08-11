@@ -16,5 +16,6 @@ bool isEqual(int x[], int y[], int size);
 void button_trigger(DigitalIn button, int* arr_index, int* input_arr);
 void init_buttons(EventQueue &queue);
 void handle_button(int value);
+void reset_password();
 
 #endif

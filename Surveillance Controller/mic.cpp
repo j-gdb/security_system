@@ -1,6 +1,7 @@
 #include "mic.hpp"
 
 InterruptIn mic(PA_15);
+extern volatile bool lock_state;
 
 void signal(){
     // printf("Signal Detected");

@@ -5,7 +5,7 @@ volatile bool state_changed = false;
 
 
 void unlock(){
-    lock_state = !lock_state;
+    lock_state = false;
     state_changed = true;
 }
 void toggle_lock() {
