@@ -22,17 +22,17 @@ the following: https://github.com/ARMmbed/wifi-ism43362
 - Modify the htttp_post_req.cpp file to the IP, port, SSD and PWD of your wifi router
 
 ### Steps
-1. open the Surviellance Controller Folder in the Mbed Studio as your active program
-2. select the DISCO-L475VG-IOT01A (B-L475E-IOT01A) microcontroller as the target board
-3. make sure that this microcontroller is connected with the breadboard and the other Surviellance Controller
-4. connect the microcontroller with the usb cord onto your PC
-5. place the microcontroller towards the ceiling to avoid triggering the device when started
-6. build and run on the program
-7. hovering your hand over the ToF sensor should trigger the sensor and lock the system
-8. presssing a sequence of buttons in the correct order should unlock the system. (Red - Blue - Black - Green)
+1. Open the Surviellance Controller Folder in the Mbed Studio as your active program
+2. Select the DISCO-L475VG-IOT01A (B-L475E-IOT01A) microcontroller as the target board
+3. Make sure that this microcontroller is connected with the breadboard and the Microphone Surviellance Controller
+4. Connect the microcontroller with the usb cord onto your PC
+5. Place the microcontroller towards the ceiling to avoid triggering the device when started
+6. Build and run on the program
+7. Hovering your hand over the ToF sensor should trigger the sensor and lock the system
+8. Presssing a sequence of buttons in the correct order should unlock the system. (Red - Blue - Black - Green)
 
 ## Surveillance Controller (Microphone)
-The microphone sensor component integrates with the main Surveillance Controller to provide an audio-based method of unlocking the security system. When a specific sound level is detected, it sends a signal to the main Surveillance Controller to unlock the system. Unlike the other boards, the code for the microphone was written in the STM32Cube framework, rather than the Mebd framework. The specific hardware set up is included in the mic_2.ioc file.
+The microphone sensor component integrates with the main Surveillance Controller to provide an audio-based method of unlocking the security system. When a specific sound level is detected, it sends a signal to the main Surveillance Controller to unlock the system. Unlike the other boards, the code for the microphone was written in the STM32Cube framework, rather than the Mebd framework. The specific hardware set up is included in the "Microphone Controller.ioc" file.
 
 ### Prerequisites
 - Use the STM32Cube IDE as the reccomended IDE
@@ -48,8 +48,16 @@ The microphone sensor component integrates with the main Surveillance Controller
 5. Any loud noises should be picked up by the microphone, and send a digial signal will be sent out.
 
 ## Command Controller 
-This microcontroller manages the physical actuator (servo motor) of the security system based on commands received from the server. It polls a central server for the current lock state and controls the servo motor accordingly.
+This microcontroller manages the physical actuator (servo motor) of the security system based on commands received from the server. It polls a central server for the current lock state and controls the servo motor accordingly. The servo motor used was an sg90. However, since it is likely a knockoff, the pulsewidths are different from what the datasheet says they need to be.
 
 ### Prerequisites
 - Use the Mbed IDE as the reccomended IDE.
-- Connect the wires between 
+- Connect the wires between the power source and the motor
+- Connect the motor to the microcontroller through PA_3, and create a common ground with the microcontroller and ground
+
+### Steps
+1. Open the Command Controller Folder in the Mbed Studio as your active program.
+2. Select the DISCO-L475VG-IOT01A (B-L475E-IOT01A) microcontroller as the target board.
+3. Connect the microcontroller with the usb cord onto your PC.
+4. Build and run on the program.
+5. When the program is notified to unlock or lock, you will see the motor change accordingly.
