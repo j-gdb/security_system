@@ -91,8 +91,20 @@ void handle_button(int value) {
     }
 }
 
-void irq_handler(EventQueue &queue, int value){
-    event_ids[value] = queue.call(handle_button, value);
+void blue_handler(){
+    event_ids[3] = queue_ptr->call(handle_button, 3);
+}
+
+void red_handler(){
+    event_ids[2] = queue_ptr->call(handle_button, 2);
+}
+
+void green_handler(){
+    event_ids[1] = queue_ptr->call(handle_button, 1);
+}
+
+void black_handler(){
+    event_ids[0] = queue_ptr->call(handle_button, 0);
 }
 
 // Setup buttons and interrupts
@@ -104,8 +116,8 @@ void init_buttons(EventQueue &queue) {
     green_button.mode(PullUp);
     black_button.mode(PullUp);
 
-    blue_button.fall([&] { irq_handler(queue, 3); });
-    red_button.fall([&] { irq_handler(queue, 2); });
-    green_button.fall([&] { irq_handler(queue, 1); });
-    black_button.fall([&] { irq_handler(queue, 0); });
+    blue_button.fall(blue_handler);
+    red_button.fall(red_handler);
+    green_button.fall(green_handler);
+    black_button.fall(black_handler);
 }

@@ -8,10 +8,10 @@
 extern volatile bool lock_state;
 extern volatile bool state_changed;
 
-#define SERVER_IP "10.66.169.168" 
+#define SERVER_IP "SERVER_IP" 
 #define SERVER_PORT 5000
-#define WIFISSD "Pixel_2073"
-#define WIFIPWD "pass1122"
+#define WIFISSD "WIFI_NAME"
+#define WIFIPWD "WIFI_PASSWORD"
 
 
 void setup_wifi_and_wait() {
