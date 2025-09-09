@@ -1,4 +1,4 @@
-# CSC385 Security System
+# Security System
 
 ## Surveillance Controller (ToF Sensor & Buttons)
 This microcontroller is tasked to detecting any changes on the Time of Flight Sensor (VL53L0X) and also unlocking the Security System by typing the password on the connected external buttons.
